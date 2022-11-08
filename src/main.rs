@@ -2,6 +2,7 @@ mod render;
 mod geometry;
 
 use geometry::vec3::Vec3;
+use crate::geometry::light::Light;
 use crate::geometry::Material;
 use crate::geometry::sphere::{Sphere, RenderUtils};
 use crate::render::{ImageMatrix};
@@ -17,8 +18,12 @@ fn main() {
         Sphere::new(Vec3::new(7.0, 5.0, -18.0), 2.0, ivory)
     ];
 
-    let mut image_matrix = ImageMatrix::new(1024, 768);
-    RenderUtils::render_spheres(&mut image_matrix, &spheres);
+    let lights = vec![
+        Light::new(Vec3::new(-20.0, 20.0, 20.0), 1.5)
+    ];
 
-    image_matrix.save_image("test3.png");
+    let mut image_matrix = ImageMatrix::new(1024, 768);
+    RenderUtils::render_spheres(&mut image_matrix, &spheres, &lights);
+
+    image_matrix.save_image("test4.png");
 }

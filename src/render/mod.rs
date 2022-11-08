@@ -4,6 +4,7 @@ use crate::geometry::{sphere::Sphere, vec3::Vec3};
 
 pub mod constants;
 
+
 pub struct ImageMatrix {
     framebuffer: RgbImage
 }

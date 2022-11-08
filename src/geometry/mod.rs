@@ -2,6 +2,7 @@ use crate::geometry::vec3::{Vec3, ZERO_VEC};
 
 pub mod sphere;
 pub mod vec3;
+pub mod light;
 
 trait Intersectable {
     fn ray_intersects(orig: &vec3::Vec3, dir: &vec3::Vec3, t0: f64) -> bool;

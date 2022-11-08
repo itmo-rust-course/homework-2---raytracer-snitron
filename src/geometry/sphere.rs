@@ -1,6 +1,5 @@
-use std::thread::spawn;
-
 use crate::geometry::{Intersectable, Material, vec3::{Vec3, ZERO_VEC}};
+use crate::geometry::light::Light;
 use crate::render::{constants::{color::BACKGROUND, FOV}, ImageMatrix};
 use crate::render::constants::color::BACKGROUND_M;
 use crate::render::constants::SPHERES_MAX_DIST;
@@ -46,7 +45,11 @@ impl Sphere {
 pub struct RenderUtils;
 
 impl RenderUtils {
-    pub fn render_spheres(framebuffer: &mut ImageMatrix, spheres: &Vec<Sphere>) {
+    pub fn render_spheres(
+        framebuffer: &mut ImageMatrix,
+        spheres: &Vec<Sphere>,
+        lights: &Vec<Light>
+    ) {
         let (w, h) = framebuffer.get_dimensions();
         let (wf, hf) = (w as f64, h as f64);
         let fov_2tan = (FOV / 2.0).tan();
@@ -65,12 +68,18 @@ impl RenderUtils {
                 }
 
 
-                framebuffer.put_pixel(i, j, RenderUtils::cast_ray(ZERO_VEC, dir, spheres))
+                framebuffer.put_pixel(i, j, RenderUtils::cast_ray(ZERO_VEC, dir, spheres, lights))
             }
         }
     }
 
-    pub fn spheres_intercects(orig: Vec3, dir: Vec3, hit_point: &mut Vec3, n: &mut Vec3, spheres: &Vec<Sphere>) -> (bool, Material) {
+    pub fn spheres_intercects(
+        orig: Vec3,
+        dir: Vec3,
+        hit_point: &mut Vec3,
+        n: &mut Vec3,
+        spheres: &Vec<Sphere>
+    ) -> (bool, Material) {
         let mut spheres_dist = f64::MAX;
         let mut material = BACKGROUND_M;
 
@@ -87,12 +96,27 @@ impl RenderUtils {
         return  (spheres_dist < SPHERES_MAX_DIST, material);
     }
 
-    pub fn cast_ray(orig: Vec3, dir: Vec3, spheres: &Vec<Sphere>) -> Vec3 {
+    pub fn cast_ray(
+        orig: Vec3,
+        dir: Vec3,
+        spheres: &Vec<Sphere>,
+        lights: &Vec<Light>
+    ) -> Vec3 {
         let mut hit_point = ZERO_VEC;
         let mut n = ZERO_VEC;
 
         let (intersects, material) = RenderUtils::spheres_intercects(orig, dir, &mut hit_point, &mut n, spheres);
 
-        return material.diffuse_color;
+        if !intersects {
+            return material.diffuse_color;
+        }
+
+        let mut diffuse_intensity = 0.0;
+
+        for light in lights {
+            let light_dir = (light.position - hit_point).normalize();
+            diffuse_intensity = 0.0_f64.max(light_dir % n);
+        }
+        return material.diffuse_color.mul_const(diffuse_intensity);
     }
 }
