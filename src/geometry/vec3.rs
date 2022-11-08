@@ -25,6 +25,10 @@ impl Vec3 {
 
         Vec3 { x: self.x / len, y: self.y / len, z: self.z / len }
     }
+
+    pub fn mul_const(&self, c: f64) -> Vec3 {
+        Vec3 { x: self.x * c, y: self.y * c, z: self.z * c }
+    }
 }
 
 impl Display for Vec3 {

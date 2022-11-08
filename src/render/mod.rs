@@ -1,5 +1,5 @@
 use image::{ImageBuffer, ImageResult, RgbImage};
-use crate::render::constants::colour::BACKGROUND;
+use crate::render::constants::color::BACKGROUND;
 use crate::geometry::{sphere::Sphere, vec3::Vec3};
 
 pub mod constants;
@@ -17,7 +17,7 @@ impl ImageMatrix {
         self.framebuffer.dimensions()
     }
 
-    pub fn put_pixel(&mut self, x: u32, y: u32, vec: &Vec3) {
+    pub fn put_pixel(&mut self, x: u32, y: u32, vec: Vec3) {
         self.framebuffer.put_pixel(x, y, vec.into());
     }
 
@@ -26,7 +26,5 @@ impl ImageMatrix {
     }
 }
 
-pub trait Renderable {
-    fn render(&self, framebuffer: &mut ImageMatrix);
-}
+
 
