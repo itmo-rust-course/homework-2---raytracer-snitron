@@ -2,7 +2,7 @@ use crate::geometry::vec3::Vec3;
 
 pub struct Light {
     pub(crate) position: Vec3,
-    intensity: f64
+    pub(crate) intensity: f64
 }
 
 impl Light {

@@ -1,5 +1,6 @@
 use crate::geometry::{Intersectable, Material, vec3::{Vec3, ZERO_VEC}};
 use crate::geometry::light::Light;
+use crate::geometry::vec3::ONE_VEC;
 use crate::render::{constants::{color::BACKGROUND, FOV}, ImageMatrix};
 use crate::render::constants::color::BACKGROUND_M;
 use crate::render::constants::SPHERES_MAX_DIST;
@@ -45,6 +46,10 @@ impl Sphere {
 pub struct RenderUtils;
 
 impl RenderUtils {
+    fn reflect(i: Vec3, n: Vec3) -> Vec3 {
+        i - n.mul_const(2.0) * (i * n)
+    }
+
     pub fn render_spheres(
         framebuffer: &mut ImageMatrix,
         spheres: &Vec<Sphere>,
@@ -108,15 +113,23 @@ impl RenderUtils {
         let (intersects, material) = RenderUtils::spheres_intercects(orig, dir, &mut hit_point, &mut n, spheres);
 
         if !intersects {
-            return material.diffuse_color;
+            return BACKGROUND;
         }
 
         let mut diffuse_intensity = 0.0;
+        let mut specular_intensity = 0.0;
 
         for light in lights {
             let light_dir = (light.position - hit_point).normalize();
-            diffuse_intensity = 0.0_f64.max(light_dir % n);
+            diffuse_intensity += 0.0_f64.max(light_dir % n) * light.intensity;
+            specular_intensity += (0.0_f64.max(RenderUtils::reflect(light_dir, n) % dir))
+                .powf(material.specular_exponent) * light.intensity;
         }
-        return material.diffuse_color.mul_const(diffuse_intensity);
+
+        return material.diffuse_color
+            .mul_const(diffuse_intensity)
+            .mul_const(material.albedo.0)
+            + ONE_VEC.mul_const(specular_intensity)
+            .mul_const(material.albedo.1);
     }
 }

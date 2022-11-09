@@ -10,6 +10,7 @@ pub struct Vec3 {
 }
 
 pub const ZERO_VEC: Vec3 = Vec3::new(0.0, 0.0, 0.0);
+pub const ONE_VEC: Vec3 = Vec3::new(1.0, 1.0, 1.0);
 
 impl Vec3 {
     pub const fn new(x: f64, y: f64, z: f64) -> Vec3 {
@@ -28,6 +29,10 @@ impl Vec3 {
 
     pub fn mul_const(&self, c: f64) -> Vec3 {
         Vec3 { x: self.x * c, y: self.y * c, z: self.z * c }
+    }
+
+    fn max_component(&self) -> f64 {
+        self.x.max(self.y.max(self.z))
     }
 }
 
@@ -96,12 +101,18 @@ impl Rem for Vec3 {
 
 impl Into<Rgb<u8>> for Vec3 {
     fn into(self) -> Rgb<u8> {
-        Rgb([(self.x * 255.0) as u8, (self.y * 255.0) as u8, (self.z * 255.0) as u8])
+        let max = self.max_component();
+        let corrector = 1.0 ;
+
+        Rgb([(self.x * corrector * 255.0) as u8, (self.y * corrector * 255.0) as u8, (self.z * corrector* 255.0) as u8])
     }
 }
 
 impl<'a> Into<Rgb<u8>> for &'a Vec3 {
     fn into(self) -> Rgb<u8> {
-        Rgb([(self.x * 255.0) as u8, (self.y * 255.0) as u8, (self.z * 255.0) as u8])
+        let max = self.max_component();
+        let corrector = 1.0;
+
+        Rgb([(self.x * corrector * 255.0) as u8, (self.y * corrector * 255.0) as u8, (self.z * corrector* 255.0) as u8])
     }
 }
