@@ -102,7 +102,7 @@ impl Rem for Vec3 {
 impl Into<Rgb<u8>> for Vec3 {
     fn into(self) -> Rgb<u8> {
         let max = self.max_component();
-        let corrector = 1.0 ;
+        let corrector = 1.0 / max.max(1.0);
 
         Rgb([(self.x * corrector * 255.0) as u8, (self.y * corrector * 255.0) as u8, (self.z * corrector* 255.0) as u8])
     }
@@ -111,7 +111,7 @@ impl Into<Rgb<u8>> for Vec3 {
 impl<'a> Into<Rgb<u8>> for &'a Vec3 {
     fn into(self) -> Rgb<u8> {
         let max = self.max_component();
-        let corrector = 1.0;
+        let corrector = 1.0 / max.max(1.0);
 
         Rgb([(self.x * corrector * 255.0) as u8, (self.y * corrector * 255.0) as u8, (self.z * corrector* 255.0) as u8])
     }

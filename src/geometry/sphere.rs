@@ -3,7 +3,7 @@ use crate::geometry::light::Light;
 use crate::geometry::vec3::ONE_VEC;
 use crate::render::{constants::{color::BACKGROUND, FOV}, ImageMatrix};
 use crate::render::constants::color::BACKGROUND_M;
-use crate::render::constants::SPHERES_MAX_DIST;
+use crate::render::constants::{REFLECTION_RECURSION_DEPTH, SPERES_SHD, SPHERES_MAX_DIST};
 
 pub struct Sphere {
     center: Vec3,
@@ -47,7 +47,7 @@ pub struct RenderUtils;
 
 impl RenderUtils {
     fn reflect(i: Vec3, n: Vec3) -> Vec3 {
-        i - n.mul_const(2.0) * (i * n)
+        i - n.mul_const(2.0).mul_const(i % n)
     }
 
     pub fn render_spheres(
@@ -73,7 +73,7 @@ impl RenderUtils {
                 }
 
 
-                framebuffer.put_pixel(i, j, RenderUtils::cast_ray(ZERO_VEC, dir, spheres, lights))
+                framebuffer.put_pixel(i, j, RenderUtils::cast_ray(ZERO_VEC, dir, spheres, lights, 0))
             }
         }
     }
@@ -105,10 +105,15 @@ impl RenderUtils {
         orig: Vec3,
         dir: Vec3,
         spheres: &Vec<Sphere>,
-        lights: &Vec<Light>
+        lights: &Vec<Light>,
+        depth: usize
     ) -> Vec3 {
         let mut hit_point = ZERO_VEC;
         let mut n = ZERO_VEC;
+
+        if depth > REFLECTION_RECURSION_DEPTH {
+            return BACKGROUND;
+        }
 
         let (intersects, material) = RenderUtils::spheres_intercects(orig, dir, &mut hit_point, &mut n, spheres);
 
@@ -116,11 +121,26 @@ impl RenderUtils {
             return BACKGROUND;
         }
 
+        let reflect_dir = RenderUtils::reflect(dir, n).normalize();
+        let reflect_orig = hit_point + n.mul_const((reflect_dir % n).signum() * SPERES_SHD);
+        let reflect_color = RenderUtils::cast_ray(reflect_orig, reflect_dir, spheres, lights, depth + 1);
+
         let mut diffuse_intensity = 0.0;
         let mut specular_intensity = 0.0;
 
         for light in lights {
             let light_dir = (light.position - hit_point).normalize();
+
+            let shadow_orig = hit_point + n.mul_const((light_dir % n).signum() * SPERES_SHD);
+            let mut shadow_point = ZERO_VEC;
+            let mut shadow_n = ZERO_VEC;
+
+            let (intersects, ..) = RenderUtils::spheres_intercects(shadow_orig, light_dir, &mut shadow_point, &mut shadow_n, spheres);
+
+            if intersects && (shadow_point - shadow_orig).len() < light_dir.len() {
+                continue;
+            }
+
             diffuse_intensity += 0.0_f64.max(light_dir % n) * light.intensity;
             specular_intensity += (0.0_f64.max(RenderUtils::reflect(light_dir, n) % dir))
                 .powf(material.specular_exponent) * light.intensity;
@@ -130,6 +150,7 @@ impl RenderUtils {
             .mul_const(diffuse_intensity)
             .mul_const(material.albedo.0)
             + ONE_VEC.mul_const(specular_intensity)
-            .mul_const(material.albedo.1);
+            .mul_const(material.albedo.1)
+            + reflect_color.mul_const(material.albedo.2);
     }
 }
