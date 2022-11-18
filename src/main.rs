@@ -8,14 +8,15 @@ use crate::geometry::sphere::{Sphere, RenderUtils};
 use crate::render::{ImageMatrix};
 
 fn main() {
-    let ivory = Material::new((0.6, 0.3, 0.1), Vec3::new(0.4, 0.4, 0.3), 50.0);
-    let red_rubber = Material::new((0.9, 0.1, 0.0),Vec3::new(0.3, 0.1, 0.1), 10.0);
-    let mirror = Material::new((0.0, 10.0, 0.8),Vec3::new(1.0, 1.0, 1.0), 1425.0);
+    let ivory = Material::new((0.6, 0.3, 0.1, 0.0), Vec3::new(0.4, 0.4, 0.3), 50.0, 1.0);
+    let red_rubber = Material::new((0.9, 0.1, 0.0, 0.0),Vec3::new(0.3, 0.1, 0.1), 10.0, 1.0);
+    let mirror = Material::new((0.0, 10.0, 0.8, 0.0),Vec3::new(1.0, 1.0, 1.0), 1425.0, 1.0);
+    let glass = Material::new((0.0, 0.5, 0.1, 0.8),Vec3::new(0.6, 0.7, 0.8), 125.0, 1.5);
 
 
     let spheres = vec![
         Sphere::new(Vec3::new(-3.0, 0.0, -16.0), 2.0, ivory),
-        Sphere::new(Vec3::new(-1.0, -1.5, -12.0), 2.0, mirror),
+        Sphere::new(Vec3::new(-1.0, -1.5, -12.0), 2.0, glass),
         Sphere::new(Vec3::new(1.5, -0.5, -18.0), 3.0, red_rubber),
         Sphere::new(Vec3::new(7.0, 5.0, -18.0), 4.0, mirror)
     ];
@@ -31,5 +32,5 @@ fn main() {
     let mut image_matrix = ImageMatrix::new(1024, 768);
     RenderUtils::render_spheres(&mut image_matrix, &spheres, &lights);
 
-    image_matrix.save_image("test7.png");
+    image_matrix.save_image("test9.png");
 }

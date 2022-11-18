@@ -1,12 +1,12 @@
 use std::fmt::{Display, Formatter, Write};
-use std::ops::{Add, Div, Mul, Sub, Rem};
+use std::ops::{Add, Div, Mul, Sub, Rem, Neg};
 use image::Rgb;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Vec3 {
     pub x: f64,
-    y: f64,
-    z: f64
+    pub(crate) y: f64,
+    pub(crate) z: f64
 }
 
 pub const ZERO_VEC: Vec3 = Vec3::new(0.0, 0.0, 0.0);
@@ -96,6 +96,14 @@ impl Rem for Vec3 {
 
     fn rem(self, rhs: Self) -> Self::Output {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
+    }
+}
+
+impl Neg for Vec3 {
+    type Output = Vec3;
+
+    fn neg(self) -> Self::Output {
+        Vec3 { x: -self.x, y: -self.y, z: -self.z }
     }
 }
 

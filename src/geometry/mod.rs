@@ -10,17 +10,18 @@ trait Intersectable {
 
 #[derive(Copy, Clone)]
 pub struct Material {
-    albedo: (f64, f64, f64),
+    albedo: (f64, f64, f64, f64),
     diffuse_color: Vec3,
-    specular_exponent: f64
+    specular_exponent: f64,
+    refractive_index: f64
 }
 
 impl Material {
-    pub const fn new(albedo: (f64, f64, f64), diffuse_color: Vec3, specular_exponent: f64) -> Material {
-        Material { albedo, diffuse_color, specular_exponent }
+    pub const fn new(albedo: (f64, f64, f64, f64), diffuse_color: Vec3, specular_exponent: f64, refractive_index: f64) -> Material {
+        Material { albedo, diffuse_color, specular_exponent, refractive_index }
     }
 
     fn new_blank() -> Material {
-        Material { albedo: (1.0, 0.0, 0.0), diffuse_color: ZERO_VEC, specular_exponent: 0.0 }
+        Material { albedo: (1.0, 0.0, 0.0, 0.0), diffuse_color: ZERO_VEC, specular_exponent: 0.0, refractive_index: 0.0 }
     }
 }
