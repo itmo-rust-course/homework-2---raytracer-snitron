@@ -1,12 +1,12 @@
-use std::fmt::{Display, Formatter};
-use std::ops::{Add, Div, Mul, Sub, Rem, Neg};
 use image::Rgb;
+use std::fmt::{Display, Formatter};
+use std::ops::{Add, Div, Mul, Neg, Rem, Sub};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Vec3 {
     pub x: f64,
     pub(crate) y: f64,
-    pub(crate) z: f64
+    pub(crate) z: f64,
 }
 
 pub const ZERO_VEC: Vec3 = Vec3::new(0.0, 0.0, 0.0);
@@ -14,7 +14,7 @@ pub const ONE_VEC: Vec3 = Vec3::new(1.0, 1.0, 1.0);
 
 impl Vec3 {
     pub const fn new(x: f64, y: f64, z: f64) -> Vec3 {
-        Vec3 {x, y, z}
+        Vec3 { x, y, z }
     }
 
     pub fn len(&self) -> f64 {
@@ -24,11 +24,19 @@ impl Vec3 {
     pub fn normalize(&self) -> Vec3 {
         let len = self.len();
 
-        Vec3 { x: self.x / len, y: self.y / len, z: self.z / len }
+        Vec3 {
+            x: self.x / len,
+            y: self.y / len,
+            z: self.z / len,
+        }
     }
 
     pub fn mul_const(&self, c: f64) -> Vec3 {
-        Vec3 { x: self.x * c, y: self.y * c, z: self.z * c }
+        Vec3 {
+            x: self.x * c,
+            y: self.y * c,
+            z: self.z * c,
+        }
     }
 
     fn max_component(&self) -> f64 {
@@ -49,7 +57,7 @@ impl Add for Vec3 {
         Vec3 {
             x: self.x + rhs.x,
             y: self.y + rhs.y,
-            z: self.z + rhs.z
+            z: self.z + rhs.z,
         }
     }
 }
@@ -61,7 +69,7 @@ impl Sub for Vec3 {
         Vec3 {
             x: self.x - rhs.x,
             y: self.y - rhs.y,
-            z: self.z - rhs.z
+            z: self.z - rhs.z,
         }
     }
 }
@@ -73,7 +81,7 @@ impl Mul for Vec3 {
         Vec3 {
             x: self.x * rhs.x,
             y: self.y * rhs.y,
-            z: self.z * rhs.z
+            z: self.z * rhs.z,
         }
     }
 }
@@ -85,7 +93,7 @@ impl Div for Vec3 {
         Vec3 {
             x: self.x / rhs.x,
             y: self.y / rhs.y,
-            z: self.z / rhs.z
+            z: self.z / rhs.z,
         }
     }
 }
@@ -103,7 +111,11 @@ impl Neg for Vec3 {
     type Output = Vec3;
 
     fn neg(self) -> Self::Output {
-        Vec3 { x: -self.x, y: -self.y, z: -self.z }
+        Vec3 {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
+        }
     }
 }
 
@@ -112,8 +124,11 @@ impl From<Vec3> for Rgb<u8> {
         let max = vec.max_component();
         let corrector = 1.0 / max.max(1.0);
 
-        Rgb([(vec.x * corrector * 255.0) as u8, (vec.y * corrector * 255.0) as u8, (vec.z * corrector * 255.0) as u8])
-
+        Rgb([
+            (vec.x * corrector * 255.0) as u8,
+            (vec.y * corrector * 255.0) as u8,
+            (vec.z * corrector * 255.0) as u8,
+        ])
     }
 }
 
@@ -122,7 +137,10 @@ impl<'a> From<&'a Vec3> for Rgb<u8> {
         let max = vec.max_component();
         let corrector = 1.0 / max.max(1.0);
 
-        Rgb([(vec.x * corrector * 255.0) as u8, (vec.y * corrector * 255.0) as u8, (vec.z * corrector * 255.0) as u8])
-
+        Rgb([
+            (vec.x * corrector * 255.0) as u8,
+            (vec.y * corrector * 255.0) as u8,
+            (vec.z * corrector * 255.0) as u8,
+        ])
     }
 }

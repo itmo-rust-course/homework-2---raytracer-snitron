@@ -1,14 +1,18 @@
-use crate::geometry::{Material, vec3::{Vec3}};
+use crate::geometry::{vec3::Vec3, Material};
 
 pub struct Sphere {
     pub(crate) center: Vec3,
     radius: f64,
-    pub(crate) material: Material
+    pub(crate) material: Material,
 }
 
 impl Sphere {
     pub fn new(center: Vec3, radius: f64, material: Material) -> Sphere {
-        Sphere { center, radius, material }
+        Sphere {
+            center,
+            radius,
+            material,
+        }
     }
 
     pub fn ray_intersects(&self, orig: Vec3, dir: Vec3) -> (bool, f64) {

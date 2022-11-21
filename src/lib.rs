@@ -1,5 +1,5 @@
-pub mod render;
 pub mod geometry;
+pub mod render;
 
 #[cfg(test)]
 mod tests {
