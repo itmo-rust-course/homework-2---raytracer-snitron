@@ -1,4 +1,4 @@
-use std::fmt::{Display, Formatter, Write};
+use std::fmt::{Display, Formatter};
 use std::ops::{Add, Div, Mul, Sub, Rem, Neg};
 use image::Rgb;
 
@@ -107,20 +107,22 @@ impl Neg for Vec3 {
     }
 }
 
-impl Into<Rgb<u8>> for Vec3 {
-    fn into(self) -> Rgb<u8> {
-        let max = self.max_component();
+impl From<Vec3> for Rgb<u8> {
+    fn from(vec: Vec3) -> Self {
+        let max = vec.max_component();
         let corrector = 1.0 / max.max(1.0);
 
-        Rgb([(self.x * corrector * 255.0) as u8, (self.y * corrector * 255.0) as u8, (self.z * corrector* 255.0) as u8])
+        Rgb([(vec.x * corrector * 255.0) as u8, (vec.y * corrector * 255.0) as u8, (vec.z * corrector * 255.0) as u8])
+
     }
 }
 
-impl<'a> Into<Rgb<u8>> for &'a Vec3 {
-    fn into(self) -> Rgb<u8> {
-        let max = self.max_component();
+impl<'a> From<&'a Vec3> for Rgb<u8> {
+    fn from(vec: &'a Vec3) -> Self {
+        let max = vec.max_component();
         let corrector = 1.0 / max.max(1.0);
 
-        Rgb([(self.x * corrector * 255.0) as u8, (self.y * corrector * 255.0) as u8, (self.z * corrector* 255.0) as u8])
+        Rgb([(vec.x * corrector * 255.0) as u8, (vec.y * corrector * 255.0) as u8, (vec.z * corrector * 255.0) as u8])
+
     }
 }

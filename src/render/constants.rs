@@ -7,7 +7,7 @@ pub mod color {
     pub const BACKGROUND_M: Material = Material::new((1.0, 0.0, 0.0, 0.0),BACKGROUND, 1.0, 1.0);
 }
 
-pub const FOV: f64 = PI / 3.0;
+pub(crate) const FOV: f64 = PI / 3.0;
 pub const SPHERES_MAX_DIST: f64 = 1000.0;
 pub const SPHERES_SHD: f64 = 0.0001;
 pub const REFLECTION_RECURSION_DEPTH: usize = 10;

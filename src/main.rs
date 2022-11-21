@@ -1,11 +1,11 @@
-mod render;
-mod geometry;
+pub mod render;
+pub mod geometry;
 
 use geometry::vec3::Vec3;
 use crate::geometry::light::Light;
 use crate::geometry::Material;
-use crate::geometry::sphere::{Sphere, RenderUtils};
-use crate::render::{ImageMatrix};
+use crate::geometry::sphere::{Sphere};
+use crate::render::{ImageMatrix, render_spheres};
 
 fn main() {
     let ivory = Material::new((0.6, 0.3, 0.1, 0.0), Vec3::new(0.4, 0.4, 0.3), 50.0, 1.0);
@@ -30,7 +30,7 @@ fn main() {
     ];
 
     let mut image_matrix = ImageMatrix::new(1024, 768);
-    RenderUtils::render_spheres(&mut image_matrix, &spheres, &lights);
+    render_spheres(&mut image_matrix, &spheres, &lights);
 
-    image_matrix.save_image("test9.png");
+    image_matrix.save_image("result.png").expect_err("Render error");
 }

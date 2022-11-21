@@ -4,16 +4,16 @@ pub mod sphere;
 pub mod vec3;
 pub mod light;
 
-trait Intersectable {
-    fn ray_intersects(orig: &vec3::Vec3, dir: &vec3::Vec3, t0: f64) -> bool;
+pub trait Intersectable {
+    fn ray_intersects(orig: &Vec3, dir: &Vec3, t0: f64) -> bool;
 }
 
 #[derive(Copy, Clone)]
 pub struct Material {
-    albedo: (f64, f64, f64, f64),
-    diffuse_color: Vec3,
-    specular_exponent: f64,
-    refractive_index: f64
+    pub(crate) albedo: (f64, f64, f64, f64),
+    pub(crate) diffuse_color: Vec3,
+    pub(crate) specular_exponent: f64,
+    pub(crate) refractive_index: f64
 }
 
 impl Material {
@@ -21,7 +21,7 @@ impl Material {
         Material { albedo, diffuse_color, specular_exponent, refractive_index }
     }
 
-    fn new_blank() -> Material {
+    pub fn new_blank() -> Material {
         Material { albedo: (1.0, 0.0, 0.0, 0.0), diffuse_color: ZERO_VEC, specular_exponent: 0.0, refractive_index: 0.0 }
     }
 }
