@@ -30,7 +30,5 @@ fn main() {
     let mut image_matrix = ImageMatrix::new(1024, 768);
     render_spheres(&mut image_matrix, &spheres, &lights);
 
-    image_matrix
-        .save_image("result.png")
-        .expect_err("Render error");
+    image_matrix.save_image("result.png").expect("Render error");
 }
